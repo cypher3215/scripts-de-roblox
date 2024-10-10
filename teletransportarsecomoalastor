@@ -1,0 +1,38 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+local UserInputService = game:GetService("UserInputService")
+local active = false
+
+-- Funciones de teletransporte
+local function teleport1() humanoidRootPart.CFrame = humanoidRootPart.CFrame + humanoidRootPart.CFrame.LookVector * 100 end
+local function teleport2() humanoidRootPart.CFrame = humanoidRootPart.CFrame - humanoidRootPart.CFrame.LookVector * 100 end
+local function teleport3() humanoidRootPart.CFrame = humanoidRootPart.CFrame + humanoidRootPart.CFrame.RightVector * 100 end
+local function teleport4() humanoidRootPart.CFrame = humanoidRootPart.CFrame - humanoidRootPart.CFrame.RightVector * 100 end
+local function teleport5() humanoidRootPart.CFrame = humanoidRootPart.CFrame + humanoidRootPart.CFrame.UpVector * 100 end
+local function teleport6() humanoidRootPart.CFrame = humanoidRootPart.CFrame - humanoidRootPart.CFrame.UpVector * 100 end
+local function desaparecer() humanoidRootPart.CFrame = humanoidRootPart.CFrame + humanoidRootPart.CFrame.UpVector * 1000 end 
+-- Manejar entradas del teclado
+
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent then
+        if input.KeyCode == Enum.KeyCode.G then
+            active = not active -- Altenar el estado
+            print("Funcion " .. (active and "activada" or "desactivada"))
+        end 
+
+        if active then 
+            if humanoidRootPart then 
+            if input.KeyCode == Enum.KeyCode.W then teleport1()
+            elseif input.KeyCode == Enum.KeyCode.S then teleport2()
+            elseif input.KeyCode == Enum.KeyCode.D then teleport3()
+            elseif input.KeyCode == Enum.KeyCode.A then teleport4()
+            elseif input.KeyCode == Enum.KeyCode.Space then teleport5()
+            elseif input.KeyCode == Enum.KeyCode.C then teleport6()
+            elseif input.UserInputType == Enum.UserInputType.MouseButton3 then desaparecer()
+            elseif input.KeyCode == Enum.KeyCode.H then active = false end
+            end
+        end
+    end
+end)
