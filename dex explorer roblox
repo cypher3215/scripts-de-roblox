@@ -1,0 +1,157 @@
+local coregui = game:GetService("CoreGui")
+local workspace = game:GetService("Workspace")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local StarterGui = game:GetService("StarterGui")
+local StarterPack = game:GetService("StarterPack")
+
+local SSDex = Instance.new("ScreenGui")
+SSDex.Parent = coregui
+SSDex.Name = "SSDex"
+
+local Outside = Instance.new("Frame")
+Outside.Parent = SSDex
+Outside.Name = "Outside"
+Outside.BackgroundColor3 = Color3.new(0,0,0)
+Outside.Position = UDim2.new(0.8,0,0,0)
+Outside.Size = UDim2.new(0.2,0,1,0)
+
+local Inside = Instance.new("ScrollingFrame")
+Inside.Parent = Outside
+Inside.Name = "Inside"
+Inside.BackgroundColor3 = Color3.new(0.184314, 0.184314, 0.184314)
+Inside.Position = UDim2.new(0.1,0,0.05,0)
+Inside.Size = UDim2.new(0.8,0,0.9,0)
+Inside.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Inside.ScrollBarImageColor3 = Color3.new(255,255,255)
+
+local UIList = Instance.new("UIListLayout")
+UIList.Parent = Inside
+UIList.SortOrder = Enum.SortOrder.LayoutOrder
+print("done")
+
+local function listWorkspaceObjects()
+	local Template = Instance.new("TextLabel")
+	Template.LayoutOrder = 1
+	Template.Parent = Inside
+	Template.Name = "Workspace"
+	Template.BackgroundColor3 = Color3.new(0,0,0)
+	Template.TextColor3 = Color3.new(255,255,255)
+	Template.BorderColor3 = Color3.new(255,255,255)
+	Template.Size = UDim2.new(1,0,0.1,0)
+	Template.Text = "Workspace"
+
+	for _, child in ipairs(workspace:GetChildren()) do
+		local Template = Instance.new("TextLabel")
+		Template.LayoutOrder = 2
+		Template.Parent = Inside
+		Template.Name = child.Name
+		Template.BackgroundColor3 = Color3.new(0,0,0)
+		Template.TextColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.BorderColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.Size = UDim2.new(1,0,0.05,0)
+		Template.Text = child.Name
+	end
+end
+
+local function listPlayersObjects()
+	local Template = Instance.new("TextLabel")
+	Template.LayoutOrder = 3
+	Template.Parent = Inside
+	Template.Name = "Players"
+	Template.BackgroundColor3 = Color3.new(0,0,0)
+	Template.TextColor3 = Color3.new(255,255,255)
+	Template.BorderColor3 = Color3.new(255,255,255)
+	Template.Size = UDim2.new(1,0,0.1,0)
+	Template.Text = "Players"
+
+	for _, child in ipairs(Players:GetChildren()) do
+		local Template = Instance.new("TextLabel")
+		Template.LayoutOrder = 4
+		Template.Parent = Inside
+		Template.Name = child.Name
+		Template.BackgroundColor3 = Color3.new(0,0,0)
+		Template.TextColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.BorderColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.Size = UDim2.new(1,0,0.05,0)
+		Template.Text = child.Name
+	end
+end
+
+local function listReplicatedStorageObjects()
+	local Template = Instance.new("TextLabel")
+	Template.LayoutOrder = 5
+	Template.Parent = Inside
+	Template.Name = "ReplicatedStorage"
+	Template.BackgroundColor3 = Color3.new(0,0,0)
+	Template.TextColor3 = Color3.new(255,255,255)
+	Template.BorderColor3 = Color3.new(255,255,255)
+	Template.Size = UDim2.new(1,0,0.1,0)
+	Template.Text = "ReplicatedStorage"
+
+	for _, child in ipairs(ReplicatedStorage:GetChildren()) do
+		local Template = Instance.new("TextLabel")
+		Template.LayoutOrder = 6
+		Template.Parent = Inside
+		Template.Name = child.Name
+		Template.BackgroundColor3 = Color3.new(0,0,0)
+		Template.TextColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.BorderColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.Size = UDim2.new(1,0,0.05,0)
+		Template.Text = child.Name
+	end
+end
+
+local function listStarterGuiObjects()
+	local Template = Instance.new("TextLabel")
+	Template.LayoutOrder = 7
+	Template.Parent = Inside
+	Template.Name = "StarterGui"
+	Template.BackgroundColor3 = Color3.new(0,0,0)
+	Template.TextColor3 = Color3.new(255,255,255)
+	Template.BorderColor3 = Color3.new(255,255,255)
+	Template.Size = UDim2.new(1,0,0.1,0)
+	Template.Text = "StarterGui"
+
+	for _, child in ipairs(StarterGui:GetChildren()) do
+		local Template = Instance.new("TextLabel")
+		Template.LayoutOrder = 8
+		Template.Parent = Inside
+		Template.Name = child.Name
+		Template.BackgroundColor3 = Color3.new(0,0,0)
+		Template.TextColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.BorderColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.Size = UDim2.new(1,0,0.05,0)
+		Template.Text = child.Name
+	end
+end
+
+local function listStarterPackObjects()
+	local Template = Instance.new("TextLabel")
+	Template.LayoutOrder = 9
+	Template.Parent = Inside
+	Template.Name = "StarterPack"
+	Template.BackgroundColor3 = Color3.new(0,0,0)
+	Template.TextColor3 = Color3.new(255,255,255)
+	Template.BorderColor3 = Color3.new(255,255,255)
+	Template.Size = UDim2.new(1,0,0.1,0)
+	Template.Text = "StarterPack"
+
+	for _, child in ipairs(StarterPack:GetChildren()) do
+		local Template = Instance.new("TextLabel")
+		Template.LayoutOrder = 10
+		Template.Parent = Inside
+		Template.Name = child.Name
+		Template.BackgroundColor3 = Color3.new(0,0,0)
+		Template.TextColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.BorderColor3 = Color3.new(0.513725, 0.513725, 0.513725)
+		Template.Size = UDim2.new(1,0,0.05,0)
+		Template.Text = child.Name
+	end
+end
+
+listStarterPackObjects()
+listReplicatedStorageObjects()
+listPlayersObjects()
+listWorkspaceObjects()
+listStarterGuiObjects()
