@@ -1,0 +1,26 @@
+local function searchForKagune(parent)
+    for _, obj in ipairs(parent:GetChildren()) do
+        if obj.Name == "Kagune" then
+            print("Encontrado 'Kagune' en: " .. parent:GetFullName())
+        end
+        -- Llamar recursivamente para buscar en los hijos
+        searchForKagune(obj)
+    end
+end
+
+-- Función principal para buscar en todos los servicios
+local function searchAllServices()
+    print("Buscando 'Kagune' en todos los servicios...")
+    searchForKagune(game)
+    searchForKagune(game:GetService("Players"))
+    searchForKagune(game:GetService("ReplicatedStorage"))
+    searchForKagune(game:GetService("Workspace"))
+    searchForKagune(game:GetService("ServerStorage"))
+    searchForKagune(game:GetService("ServerScriptService"))
+    searchForKagune(game:GetService("StarterPack"))
+    searchForKagune(game:GetService("StarterPlayer"))
+    searchForKagune(game:GetService("StarterGui"))
+end
+
+searchAllServices()
+print("Búsqueda completada.")
