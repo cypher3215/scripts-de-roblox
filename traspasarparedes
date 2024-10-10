@@ -1,0 +1,25 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+-- Asegúrate de que el personaje tenga un modelo válido
+if not character or not character:IsA("Model") then return end
+
+-- Establece la parte primaria para que se mueva
+local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+if not humanoidRootPart then return end
+
+
+
+-- Función para desactivar colisiones
+local function disableCollisions()
+    for _, part in ipairs(character:GetChildren()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+end
+
+while true do 
+    wait(0.1)
+    disableCollisions()
+end 
