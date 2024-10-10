@@ -1,0 +1,42 @@
+local Player = game.Players.LocalPlayer
+local Backpack = Player:WaitForChild("Backpack")
+
+local babosas = {
+    "BoonDoc", "FrostCrawler", "Infurnus",
+    "Rammstone", "Tazerling", "Tormato",
+    "Grenuke", "Greneater", "GoonDoc"
+}
+
+local slots = {} -- Aquí almacenaremos las babosas equipadas
+
+local function desequiparBabosas()
+    for _, slot in ipairs(slots) do
+        if Player.Character:FindFirstChild(slot) then
+            Player.Character:FindFirstChild(slot):Destroy() -- Desequipa la herramienta
+        end
+    end
+    slots = {} -- Reinicia la lista de slots
+end
+
+local function equiparBabosa(babosaNombre)
+    local babosa = Backpack:FindFirstChild(babosaNombre)
+    if babosa then
+        -- Desequipa las babosas actuales
+        desequiparBabosas()
+
+        -- Equipar la nueva babosa
+        Player.Character.Humanoid:EquipTool(babosa)
+        table.insert(slots, babosaNombre) -- Agrega a la lista de slots
+    end
+end
+
+local function cambiarBabosas()
+    local index = 1
+    while true do
+        equiparBabosa(babosas[index])
+        index = (index % #babosas) + 1 -- Cambia al siguiente índice
+        wait(3) -- Espera 3 segundos antes de cambiar
+    end
+end
+
+cambiarBabosas()
