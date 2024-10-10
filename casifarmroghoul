@@ -1,0 +1,40 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Función para mover al jugador hacia un spawn de forma gradual
+local function moveToSpawn(spawn)
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local targetPosition = spawn.Position + Vector3.new(0, 10, 0) -- Ajustar altura para simular vuelo
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        
+        -- Desactivar colisiones
+        humanoidRootPart.CanCollide = false
+        
+        -- Moverse en incrementos hacia la posición del spawn
+        while (humanoidRootPart.Position - targetPosition).magnitude > 1 do
+            -- Calcular la dirección y mover
+            local direction = (targetPosition - humanoidRootPart.Position).unit
+            humanoidRootPart.Position = humanoidRootPart.Position + direction * 5 -- Mover 5 studs
+            wait(0.1) -- Espera un poco entre cada movimiento
+            
+            -- Mantener altura fija
+            humanoidRootPart.Position = Vector3.new(humanoidRootPart.Position.X, targetPosition.Y, humanoidRootPart.Position.Z)
+        end
+        
+        print("Llegaste a: " .. spawn.Name .. " en la posición " .. tostring(targetPosition))
+        wait(1) -- Espera antes de pasar al siguiente spawn
+        
+        -- Rehabilitar colisiones
+        humanoidRootPart.CanCollide = true
+    end
+end
+
+-- Teletransportar a todos los spawns en NPCSpawns
+local npcSpawnsFolder = workspace:FindFirstChild("NPCSpawns")
+if npcSpawnsFolder then
+    for _, spawn in ipairs(npcSpawnsFolder:GetChildren()) do
+        moveToSpawn(spawn)
+    end
+else
+    print("No se encontró la carpeta 'NPCSpawns'.")
+end
