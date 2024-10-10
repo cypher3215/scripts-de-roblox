@@ -1,0 +1,21 @@
+local Players = game:GetService("Players")
+
+local function teleportPlayer(playerName, targetPlayerName)
+    local player = Players:FindFirstChild(playerName)
+    local targetPlayer = Players:FindFirstChild(targetPlayerName)
+
+    if player and targetPlayer and targetPlayer.Character then
+        local targetHumanoidRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if targetHumanoidRootPart then
+            player.Character:MoveTo(targetHumanoidRootPart.Position)
+            print(playerName .. " ha sido teletransportado a " .. targetPlayerName)
+        else
+            print("La parte HumanoidRootPart del jugador objetivo no se encontró.")
+        end
+    else
+        print("Jugador o objetivo no encontrado.")
+    end
+end
+
+-- Ejemplo de uso: Teletransportar a "Jugador1" a "Jugador2"
+teleportPlayer("kingthorrune", "zorrito8000")
