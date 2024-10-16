@@ -2,7 +2,7 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local humanoid = Player.Character:FindFirstChildOfClass("Humanoid")
 local PlayerPosition = Player:FindFirstChild("kingthorrune") -- Asegúrate de que esto sea correcto
-local interrupcion = Vector3.new(-62.29, 1, -200)
+local interrupcion = Vector3.new(-62.29, 1000, -200)
 local coordenadas1 = Vector3.new(-62.29, 1, 1700) -- Usa Vector3.new para las coordenadas
 local coordenadas2 = Vector3.new(-62.29, 1, 2400)
 local coordenadas3 = Vector3.new(-30.29, 1, 3100)
@@ -16,8 +16,6 @@ local coordenadas10 = Vector3.new(-62.29, 1, 7800)
 local coordenadas11 = Vector3.new(-62.29, 1, 8700) -- Usa Vector3.new para las coordenadas
 local coordenadas12 = Vector3.new(-62.29, 1, 9500)
 local premio = Vector3.new(-62.29, 1, 9500)
-local tiempoReinicio = 300
-
 
 wait(0.5)local ba=Instance.new("ScreenGui")
 local ca=Instance.new("TextLabel")local da=Instance.new("Frame")
@@ -42,7 +40,6 @@ wait(2)
 ab.Text="afk"wait(2)ab.Text="on fire"end)
 
 while true do 
-    tiempoReinicio = tiempoReinicio + 10
     wait(10)
     if Player.Character then 
         local humanoidRootPart = Player.Character:FindFirstChild("HumanoidRootPart") -- Corrige el nombre a FindFirstChild
@@ -98,15 +95,7 @@ while true do
             wait(0.2)
             humanoidRootPart.CFrame = CFrame.new(premio)
             wait(2)
-            humanoidRootPart.CFrame = CFrame.new(coordenadas12) 
         end
     end
 end
 
-if tiempoReinicio == 300 then 
-    humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-end
-
-if tiempoReinicio == 305 then 
-    tiempoReinicio = 0
-end 
