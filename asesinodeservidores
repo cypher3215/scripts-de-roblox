@@ -1,0 +1,49 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local currentIndex = 1 -- Índice del jugador actual a teletransportar
+
+local function teleportNextPlayer(targetPlayerName)
+    local targetPlayer = Players:FindFirstChild(targetPlayerName)
+
+    if targetPlayer and targetPlayer.Character then
+        local targetHumanoidRootPart = targetPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+        if targetHumanoidRootPart then
+            local playersList = Players:GetPlayers()
+            -- Asegúrate de que currentIndex esté dentro del rango de la lista de jugadores
+            if currentIndex <= #playersList then
+                local playerToTeleport = playersList[currentIndex]
+                
+                if playerToTeleport.Name ~= targetPlayerName and playerToTeleport.Character then
+                    local playerHumanoidRootPart = playerToTeleport.Character:FindFirstChild("HumanoidRootPart")
+                    if playerHumanoidRootPart then
+                        -- Teletransportar al jugador
+                        targetPlayer.Character:MoveTo(playerHumanoidRootPart.Position)
+                        print(targetPlayerName .. " ha teletransportado a " .. playerToTeleport.Name)
+                        currentIndex = currentIndex + 1 -- Incrementar el índice para el siguiente jugador
+                    else
+                        print("La parte HumanoidRootPart del jugador " .. playerToTeleport.Name .. " no se encontró.")
+                    end
+                else
+                    currentIndex = currentIndex + 1 -- Si el jugador es el mismo, pasar al siguiente
+                end
+            else
+                print("Todos los jugadores han sido teletransportados. Reiniciando...")
+                currentIndex = 1 -- Reiniciar el índice si se han teletransportado todos
+            end
+        else
+            print("La parte HumanoidRootPart del jugador objetivo no se encontró.")
+        end
+    else
+        print("Jugador objetivo no encontrado.")
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent then
+        if input.KeyCode == Enum.KeyCode.G then
+            teleportNextPlayer("kingthorblackreaper")
+        end
+    end
+end)
