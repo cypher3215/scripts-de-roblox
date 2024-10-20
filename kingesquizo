@@ -1,0 +1,45 @@
+local player = game.Players.LocalPlayer
+
+-- Espera a que el personaje del jugador esté disponible
+local character = player.Character or player.CharacterAdded:Wait()
+local rootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Crear un cubo
+local cube = Instance.new("Part")
+cube.Size = Vector3.new(2, 1, 2) -- Tamaño del cubo
+cube.BrickColor = BrickColor.new("Bright green") -- Color del cubo
+cube.Material = Enum.Material.SmoothPlastic -- Material del cubo
+cube.Anchored = true -- Asegúrate de que no se mueva
+cube.Parent = workspace -- Agrega el cubo al workspace
+local UserInputService = game:GetService("UserInputService")
+
+-- Función para actualizar la posición del cubo
+local function updateCubePosition()
+    if character and character:FindFirstChild("HumanoidRootPart") do
+        wait(0.1) -- Espera un momento antes de actualizar
+        cube.Position = rootPart.Position + Vector3.new(0, -2, 0) -- Coloca el cubo debajo del personaje
+    end
+end
+
+local function bajada()
+    if character and character:FindFIrstChild("HumanoidRootPart") do 
+        wait(0.1) -- Espera un momento antes de actualizar
+        cube.Position = rootPart.Position + Vector3.new(-2, -2, -2) -- Colosa el cubo en escalera de bajada
+    end 
+end 
+
+
+UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.G and not gameProcessedEvent then 
+        updating = not updating -- Cambia el estado de actualizacion
+        if updating then 
+            updateCubePosition()
+    if input.KeyCode == Enum.KeyCode.H and not gameProcessedEvent then 
+        updating = not updating -- Cambia el estado de actualizacion
+        if updating then 
+            bajada()
+        end
+    end 
+end)
+
+
