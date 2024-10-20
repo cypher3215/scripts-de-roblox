@@ -1,0 +1,88 @@
+local player = game.Players:FindFirstChild("kingthorblackreaper")
+if not player then return end
+
+local userInputService = game:GetService("UserInputService")
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function createParticleEffect1()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    for i = 1, 10 do -- Cambia el número de partículas aquí
+        local particle = Instance.new("Part")
+        particle.Shape = Enum.PartType.Ball
+        particle.Size = Vector3.new(0.5, 0.5, 0.5) -- Tamaño del círculo carmesí
+        particle.Color = Color3.fromRGB(220, 20, 60) -- Color carmesí
+        particle.Material = Enum.Material.Neon
+        particle.Position = humanoidRootPart.Position + Vector3.new(math.random(-2, 2), 0, math.random(-2, 2)) -- Posición aleatoria alrededor del jugador
+        particle.Anchored = true
+        particle.CanCollide = false
+        particle.Parent = workspace
+
+        -- Crear un pequeño círculo negro en el centro
+        local innerParticle = Instance.new("Part")
+        innerParticle.Shape = Enum.PartType.Ball
+        innerParticle.Size = Vector3.new(0.2, 0.2, 0.2) -- Tamaño del círculo negro
+        innerParticle.Color = Color3.fromRGB(0, 0, 0) -- Color negro
+        innerParticle.Material = Enum.Material.Neon
+        innerParticle.Position = particle.Position
+        innerParticle.Anchored = true
+        innerParticle.CanCollide = false
+        innerParticle.Parent = workspace
+
+        -- Movimiento hacia arriba
+        for t = 1, 21 do
+            particle.Position = particle.Position + Vector3.new(0, 0.1, 0) -- Movimiento hacia arriba
+            innerParticle.Position = innerParticle.Position + Vector3.new(0, 0.1, 0) -- Movimiento hacia arriba
+            wait(0.1) -- Espera antes de mover la partícula de nuevo
+        end
+
+        -- Destruir las partículas después del movimiento
+        particle:Destroy()
+        innerParticle:Destroy()
+    end
+end
+
+local function createParticleEffect2()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    for i = 1, 20 do -- Cambia el número de partículas aquí
+        local particle = Instance.new("Part")
+        particle.Shape = Enum.PartType.Ball
+        particle.Size = Vector3.new(0.1, 0.1, 0.1) -- Tamaño del círculo carmesí
+        particle.Color = Color3.fromRGB(139, 0, 0) -- Color carmesí
+        particle.Material = Enum.Material.Neon
+        particle.Position = humanoidRootPart.Position + Vector3.new(math.random(-2, 2), 0, math.random(-2, 2)) -- Posición aleatoria alrededor del jugador
+        particle.Anchored = true
+        particle.CanCollide = false
+        particle.Parent = workspace
+
+        -- Crear un pequeño círculo negro en el centro
+        local innerParticle = Instance.new("Part")
+        innerParticle.Shape = Enum.PartType.Ball
+        innerParticle.Size = Vector3.new(0.2, 0.2, 0.2) -- Tamaño del círculo negro
+        innerParticle.Color = Color3.fromRGB(0, 0, 0) -- Color negro
+        innerParticle.Material = Enum.Material.Neon
+        innerParticle.Position = particle.Position
+        innerParticle.Anchored = true
+        innerParticle.CanCollide = false
+        innerParticle.Parent = workspace
+
+        -- Movimiento hacia arriba
+        for t = 1, 21 do
+            particle.Position = particle.Position + Vector3.new(0, 0.1, 0) -- Movimiento hacia arriba
+            innerParticle.Position = innerParticle.Position + Vector3.new(0, 0.1, 0) -- Movimiento hacia arriba
+            wait(0.1) -- Espera antes de mover la partícula de nuevo
+        end
+
+        -- Destruir las partículas después del movimiento
+        particle:Destroy()
+        innerParticle:Destroy()
+    end
+end
+
+userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+    if not gameProcessedEvent and input.KeyCode == Enum.KeyCode.G then
+        createParticleEffect1()
+        createParticleEffect2()
+    end
+end)
