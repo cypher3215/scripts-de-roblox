@@ -1,0 +1,32 @@
+local playerName = "kingthorblackreaper" -- Nombre del jugador
+local player = game.Players:FindFirstChild(playerName)
+
+if player then
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Crear las alas
+    for i = -1, 1, 2 do
+        local wing = Instance.new("Part")
+        wing.Size = Vector3.new(1, 1, 1) -- Tamaño de las alas
+        wing.Color = Color3.new(1, 1, 1) -- Color blanco
+        wing.Anchored = false
+        wing.CanCollide = false
+        wing.Parent = character
+
+        -- Posicionar las alas
+        wing.Position = humanoidRootPart.Position + Vector3.new(i * 1.5, 0.5, -1.5) -- Ajusta la posición
+
+        -- Rotar las alas hacia arriba
+        wing.Orientation = Vector3.new(0, 90, 45) -- Orientación de las alas hacia arriba
+
+        -- Crear un Weld para que se mantengan en su lugar
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = humanoidRootPart
+        weld.Part1 = wing
+        weld.Parent = wing
+    end
+end 
+
+
+
