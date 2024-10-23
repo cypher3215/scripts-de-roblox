@@ -1,0 +1,35 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Función para manejar el clic y rastrear funciones
+local function onMouseClick()
+    print("¡Se hizo clic en la pantalla!")
+
+    -- Aquí puedes verificar si hay funciones que se ejecutan
+    -- Esto es un ejemplo simple, y podrías añadir más lógica para verificar funciones específicas
+end
+
+-- Conectar la función al evento Button1Down del mouse
+mouse.Button1Down:Connect(onMouseClick)
+
+-- Escuchar el evento de las funciones que pueden estar registradas
+local function trackFunctionCalls(func)
+    if func and type(func) == "function" then
+        local originalFunction = func
+        return function(...)
+            print("Se llamó a la función:", debug.getinfo(originalFunction).name or "Anónima")
+            return originalFunction(...)
+        end
+    end
+end
+
+-- Aquí puedes agregar funciones que quieras rastrear, por ejemplo:
+local function exampleFunction()
+    print("¡Esta es una función de ejemplo!")
+end
+
+-- Reemplaza la función original con la versión rastreada
+exampleFunction = trackFunctionCalls(exampleFunction)
+
+-- Simular la llamada a la función
+exampleFunction()  -- Puedes eliminar esta línea si no quieres que se llame automáticamente
