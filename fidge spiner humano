@@ -1,0 +1,16 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+-- Velocidad de rotación en grados por segundo
+local rotationSpeed = 360  -- Ajusta este valor según lo rápido que quieras que gire
+
+-- Función para girar el personaje
+local function rotateCharacter()
+	while true do
+		humanoidRootPart.CFrame = humanoidRootPart.CFrame * CFrame.Angles(0, math.rad(rotationSpeed * wait()), 0)
+		wait()
+	end
+end
+
+rotateCharacter()
