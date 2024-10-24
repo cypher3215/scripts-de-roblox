@@ -1,0 +1,66 @@
+while true do 
+    wait(10)
+    local UserInputService = game:GetService("UserInputService")
+    local Players = game:GetService("Players")
+
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local flying = false
+    local speed = 50
+    local lastSpacePress = 0
+    local bodyVelocity
+
+    -- Función para activar el vuelo
+    local function toggleFly()
+        if flying then
+            flying = false
+            humanoid.PlatformStand = false
+            if bodyVelocity then
+                bodyVelocity:Destroy() -- Destruir BodyVelocity al desactivar el vuelo
+            end
+        else
+            flying = true
+            humanoid.PlatformStand = true
+            bodyVelocity = Instance.new("BodyVelocity")
+            bodyVelocity.Velocity = Vector3.new(100, speed, 100)
+            bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+            bodyVelocity.Parent = character.PrimaryPart
+
+            while flying do
+                local moveDirection = Vector3.new(0, 0, 0)
+                if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+                    moveDirection = moveDirection + character.PrimaryPart.CFrame.LookVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+                    moveDirection = moveDirection - character.PrimaryPart.CFrame.LookVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+                    moveDirection = moveDirection - character.PrimaryPart.CFrame.RightVector
+                end
+                if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+                    moveDirection = moveDirection + character.PrimaryPart.CFrame.RightVector
+                end
+
+                bodyVelocity.Velocity = moveDirection * speed + Vector3.new(0, speed, 0)
+                wait(0.1)
+            end
+        end
+    end
+
+    -- Detectar la pulsación de la tecla espacio para activar vuelo
+    UserInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode.Space then
+            local currentTime = tick()
+            if currentTime - lastSpacePress <= 0.3 then -- Tiempo entre pulsaciones
+                toggleFly()
+            end
+            lastSpacePress = currentTime
+        elseif input.KeyCode == Enum.KeyCode.G then
+            -- Desactivar vuelo si está activo
+            if flying then
+                toggleFly()
+            end
+        end
+    end)
+end
