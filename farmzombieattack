@@ -1,0 +1,84 @@
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local UserInputService = game:GetService("UserInputService")
+
+local isLooking = false
+
+-- Lista de NPCs a seguir
+local npcNames = {
+    "Zombie",
+    "Tank Zombie",
+    "Lava Zombie",
+    "Enraged Zombie",
+    "Slime",
+    "Demon",
+    "Void Slime",
+    "Pumpkin Zombie",
+    "Fast Zombie"
+}
+
+-- Función para manejar la lógica de seguimiento
+local function trackNearestNPC()
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- Bucle para verificar constantemente
+    while true do
+        wait(0.1)  -- Ajusta la frecuencia del chequeo aquí
+
+        if isLooking then
+            local nearestPart = nil
+            local nearestDistance = math.huge
+
+            -- Buscar todos los NPCs en la carpeta "enemies"
+            local enemiesFolder = workspace:FindFirstChild("enemies")
+            if enemiesFolder then
+                for _, other in ipairs(enemiesFolder:GetChildren()) do
+                    if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") then
+                        local head = other:FindFirstChild("Head")
+                        if head then
+                            -- Verificar si el NPC está en la lista
+                            for _, npcName in ipairs(npcNames) do
+                                if other.Name == npcName then
+                                    local distance = (character.HumanoidRootPart.Position - head.Position).magnitude
+                                    
+                                    if distance < nearestDistance then
+                                        nearestDistance = distance
+                                        nearestPart = head
+                                    end
+                                    break  -- Salir del bucle si se encuentra el NPC
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+
+            -- Mirar hacia la cabeza del NPC más cercano
+            if nearestPart then
+                camera.CFrame = CFrame.new(camera.CFrame.Position, nearestPart.Position)
+            end
+        end
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 and not gameProcessed then
+        isLooking = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isLooking = false
+    end
+end)
+
+-- Conectar el evento CharacterAdded para reiniciar el seguimiento al respawnear
+player.CharacterAdded:Connect(function()
+    trackNearestNPC()
+end)
+
+-- Iniciar el seguimiento en caso de que el personaje ya exista
+if player.Character then
+    trackNearestNPC()
+end
