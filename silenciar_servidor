@@ -1,0 +1,25 @@
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+local function silenceNonFriends()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= localPlayer and not localPlayer:IsFriendsWith(player.UserId) then
+            player:SetMuted(true)  -- Silencia al jugador
+            print(player.Name .. " ha sido silenciado.")
+        end
+    end
+end
+
+-- Silenciar jugadores al unirse al juego
+localPlayer.CharacterAdded:Connect(silenceNonFriends)
+
+-- Silenciar jugadores si hay cambios en la lista de jugadores
+Players.PlayerAdded:Connect(function(player)
+    if player ~= localPlayer and not localPlayer:IsFriendsWith(player.UserId) then
+        player:SetMuted(true)
+        print(player.Name .. " ha sido silenciado.")
+    end
+end)
+
+-- Silenciar a los jugadores ya presentes en el juego
+silenceNonFriends()
