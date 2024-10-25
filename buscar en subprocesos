@@ -1,0 +1,43 @@
+import psutil
+import time
+
+# Lista de procesos a omitir
+omit_processes = [
+    "ctfmon.exe",
+    "sihost.exe",
+    "svchost.exe",
+    "explorer.exe",
+    "firefox.exe",
+    "msedgewebview2.exe",
+    # Agrega más procesos que quieras omitir
+]
+
+# Almacenar los procesos iniciales
+existing_processes = set()
+
+def get_running_processes():
+    return {proc.name() for proc in psutil.process_iter()}
+
+def monitor_processes():
+    global existing_processes
+    existing_processes = get_running_processes()
+    
+    while True:
+        time.sleep(5)  # Espera 5 segundos antes de verificar nuevamente
+        current_processes = get_running_processes()
+        
+        # Compara con los procesos existentes
+        new_processes = current_processes - existing_processes
+        
+        # Filtra los nuevos procesos para omitir los deseados
+        filtered_new_processes = [proc for proc in new_processes if proc not in omit_processes]
+
+        if filtered_new_processes:
+            for process in filtered_new_processes:
+                print(f"Nuevo proceso detectado: {process}")
+
+        # Actualiza la lista de procesos existentes
+        existing_processes = current_processes
+
+if __name__ == "__main__":
+    monitor_processes()
