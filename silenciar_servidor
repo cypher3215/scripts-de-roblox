@@ -1,25 +1,36 @@
 local Players = game:GetService("Players")
 local localPlayer = Players.LocalPlayer
+local targetPlayerName = "kingthorrune"
 
-local function silenceNonFriends()
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= localPlayer and not localPlayer:IsFriendsWith(player.UserId) then
-            player:SetMuted(true)  -- Silencia al jugador
-            print(player.Name .. " ha sido silenciado.")
+local function blockNonFriends()
+    local targetPlayer = Players:FindFirstChild(targetPlayerName)
+
+    if targetPlayer then
+        for _, player in pairs(Players:GetPlayers()) do
+            if player ~= localPlayer and player ~= targetPlayer and not targetPlayer:IsFriendsWith(player.UserId) then
+                player:SetMuted(true)  -- Silencia al jugador
+                player:Block()         -- Bloquea al jugador
+                print(player.Name .. " ha sido silenciado y bloqueado.")
+            end
         end
+    else
+        print("El jugador objetivo no se encontró.")
     end
 end
 
--- Silenciar jugadores al unirse al juego
-localPlayer.CharacterAdded:Connect(silenceNonFriends)
+-- Silenciar y bloquear a los jugadores ya presentes al inicio
+blockNonFriends()
 
--- Silenciar jugadores si hay cambios en la lista de jugadores
+-- Silenciar y bloquear jugadores al unirse al juego
 Players.PlayerAdded:Connect(function(player)
-    if player ~= localPlayer and not localPlayer:IsFriendsWith(player.UserId) then
+    if player ~= localPlayer and not Players[targetPlayerName]:IsFriendsWith(player.UserId) then
         player:SetMuted(true)
-        print(player.Name .. " ha sido silenciado.")
+        player:Block()
+        print(player.Name .. " ha sido silenciado y bloqueado.")
     end
 end)
 
--- Silenciar a los jugadores ya presentes en el juego
-silenceNonFriends()
+-- Comprobar continuamente si hay cambios en la lista de jugadores
+while wait(5) do  -- Verifica cada 5 segundos
+    blockNonFriends()
+end
