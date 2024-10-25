@@ -1,0 +1,19 @@
+local Players = game.Players
+
+-- Función para manejar la llegada de nuevos jugadores
+local function onPlayerAdded(player)
+    player.Chatted:Connect(function(message)
+        game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("[" .. player.Name .. "] " .. message, "All")
+    end)
+    
+    -- Enviar el mensaje "Buenos días" al unirse
+    game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Buenos días", "All")
+end
+
+-- Conectar a los jugadores que ya están en el juego
+for _, player in ipairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
+
+-- Conectar a nuevos jugadores que se unan
+Players.PlayerAdded:Connect(onPlayerAdded)
