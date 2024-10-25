@@ -1,0 +1,110 @@
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local UserInputService = game:GetService("UserInputService")
+
+local isLooking = false
+local isShooting = false
+
+-- Lista de NPCs a seguir
+local npcNames = {
+    "Zombie",
+    "Tank Zombie",
+    "Lava Zombie",
+    "Enraged Zombie",
+    "Slime",
+    "Demon",
+    "Void Slime",
+    "Pumpkin Zombie",
+    "Fast Zombie"
+}
+
+-- Función para manejar la lógica de seguimiento
+local function trackNearestNPC()
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- Bucle para verificar constantemente
+    while true do
+        wait(0.1)
+
+        if isLooking then
+            local nearestPart = nil
+            local nearestDistance = math.huge
+
+            -- Buscar todos los NPCs en la carpeta "enemies"
+            local enemiesFolder = workspace:FindFirstChild("enemies")
+            if enemiesFolder then
+                for _, other in ipairs(enemiesFolder:GetChildren()) do
+                    if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") then
+                        local head = other:FindFirstChild("Head")
+                        if head then
+                            for _, npcName in ipairs(npcNames) do
+                                if other.Name == npcName then
+                                    local distance = (humanoidRootPart.Position - head.Position).magnitude
+                                    
+                                    if distance < nearestDistance then
+                                        nearestDistance = distance
+                                        nearestPart = head
+                                    end
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+
+            -- Posicionar el personaje detrás del NPC más cercano
+            if nearestPart then
+                local behindPosition = nearestPart.Position - (nearestPart.CFrame.LookVector * 10)
+                humanoidRootPart.CFrame = CFrame.new(behindPosition) * CFrame.new(0, 1, 0)
+
+                -- Rotar el personaje y la cámara para mirar al NPC
+                local lookAtPosition = nearestPart.Position
+                local newCFrame = CFrame.new(humanoidRootPart.Position, lookAtPosition)
+                humanoidRootPart.CFrame = newCFrame
+                camera.CFrame = CFrame.new(camera.CFrame.Position, lookAtPosition)
+            end
+        end
+    end
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.G and not gameProcessed then
+        isLooking = not isLooking
+    elseif input.UserInputType == Enum.UserInputType.MouseButton1 and not gameProcessed then
+        isShooting = true
+        activateMachineGun()  -- Llama a la función de disparo
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        isShooting = false
+    end
+end)
+
+-- Función para activar el disparo del arma
+local function activateMachineGun()
+    while isShooting do
+        wait(0.1)  -- Intervalo entre disparos
+
+        local backpack = player:FindFirstChildOfClass("Backpack")
+        local toolInSlot2 = backpack:FindFirstChild("Machine Gun")
+
+        if toolInSlot2 then
+            toolInSlot2.Parent = player.Character  -- Equipar el Tool
+            toolInSlot2:Activate()  -- Activar el arma
+        end
+    end
+end
+
+-- Conectar el evento CharacterAdded para reiniciar el seguimiento al respawnear
+player.CharacterAdded:Connect(function()
+    trackNearestNPC()
+end)
+
+-- Iniciar el seguimiento en caso de que el personaje ya exista
+if player.Character then
+    trackNearestNPC()
+end
