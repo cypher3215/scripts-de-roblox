@@ -1,0 +1,48 @@
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local character = player.Character or player.CharacterAdded:Wait()
+local UserInputService = game:GetService("UserInputService")
+
+local isLooking = false
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 and not gameProcessed then
+        isLooking = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isLooking = false
+    end
+end)
+
+-- Bucle para verificar constantemente
+while true do
+    wait(0.1)  -- Ajusta la frecuencia del chequeo aquí
+    
+    if isLooking then
+        local nearestPart = nil
+        local nearestDistance = math.huge
+
+        -- Buscar todos los personajes en el juego
+        for _, other in ipairs(game.Workspace:GetChildren()) do
+            if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") and other ~= character then
+                local head = other:FindFirstChild("Head")
+                if head then
+                    local distance = (character.HumanoidRootPart.Position - head.Position).magnitude
+                    
+                    if distance < nearestDistance then
+                        nearestDistance = distance
+                        nearestPart = head
+                    end
+                end
+            end
+        end
+
+        -- Mirar hacia la cabeza del personaje más cercano que no sea el propio jugador
+        if nearestPart then
+            camera.CFrame = CFrame.new(camera.CFrame.Position, nearestPart.Position)
+        end
+    end
+end
