@@ -1,9 +1,44 @@
 local player = game.Players.LocalPlayer
 local camera = workspace.CurrentCamera
-local character = player.Character or player.CharacterAdded:Wait()
 local UserInputService = game:GetService("UserInputService")
 
 local isLooking = false
+
+-- Función para manejar la lógica de seguimiento
+local function trackNearestHead()
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- Bucle para verificar constantemente
+    while true do
+        wait(0.1)  -- Ajusta la frecuencia del chequeo aquí
+
+        if isLooking then
+            local nearestPart = nil
+            local nearestDistance = math.huge
+
+            -- Buscar todos los personajes en el juego
+            for _, other in ipairs(game.Workspace:GetChildren()) do
+                if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") and other ~= character then
+                    local head = other:FindFirstChild("Head")
+                    if head then
+                        local distance = (character.HumanoidRootPart.Position - head.Position).magnitude
+                        
+                        if distance < nearestDistance then
+                            nearestDistance = distance
+                            nearestPart = head
+                        end
+                    end
+                end
+            end
+
+            -- Mirar hacia la cabeza del personaje más cercano que no sea el propio jugador
+            if nearestPart then
+                camera.CFrame = CFrame.new(camera.CFrame.Position, nearestPart.Position)
+            end
+        end
+        wait(0.1)  -- Evitar saturar el bucle
+    end
+end
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.UserInputType == Enum.UserInputType.MouseButton2 and not gameProcessed then
@@ -17,32 +52,12 @@ UserInputService.InputEnded:Connect(function(input)
     end
 end)
 
--- Bucle para verificar constantemente
-while true do
-    wait(0.1)  -- Ajusta la frecuencia del chequeo aquí
-    
-    if isLooking then
-        local nearestPart = nil
-        local nearestDistance = math.huge
+-- Conectar el evento CharacterAdded para reiniciar el seguimiento al respawnear
+player.CharacterAdded:Connect(function()
+    trackNearestHead()
+end)
 
-        -- Buscar todos los personajes en el juego
-        for _, other in ipairs(game.Workspace:GetChildren()) do
-            if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") and other ~= character then
-                local head = other:FindFirstChild("Head")
-                if head then
-                    local distance = (character.HumanoidRootPart.Position - head.Position).magnitude
-                    
-                    if distance < nearestDistance then
-                        nearestDistance = distance
-                        nearestPart = head
-                    end
-                end
-            end
-        end
-
-        -- Mirar hacia la cabeza del personaje más cercano que no sea el propio jugador
-        if nearestPart then
-            camera.CFrame = CFrame.new(camera.CFrame.Position, nearestPart.Position)
-        end
-    end
+-- Iniciar el seguimiento en caso de que el personaje ya exista
+if player.Character then
+    trackNearestHead()
 end
