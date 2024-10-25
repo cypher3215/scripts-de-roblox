@@ -1,0 +1,26 @@
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local character = player.Character or player.CharacterAdded:Wait()
+
+while true do
+    wait(0.1)  -- Ajusta la frecuencia del chequeo aquí
+    local nearestPart = nil
+    local nearestDistance = math.huge
+
+    -- Buscar todos los personajes en el juego
+    for _, other in ipairs(game.Workspace:GetChildren()) do
+        if other:IsA("Model") and other:FindFirstChild("HumanoidRootPart") and other ~= character then
+            local distance = (character.HumanoidRootPart.Position - other.HumanoidRootPart.Position).magnitude
+            
+            if distance < nearestDistance then
+                nearestDistance = distance
+                nearestPart = other.HumanoidRootPart
+            end
+        end
+    end
+
+    -- Mirar hacia el HumanoidRootPart más cercano
+    if nearestPart then
+        camera.CFrame = CFrame.new(camera.CFrame.Position, nearestPart.Position)
+    end
+end
