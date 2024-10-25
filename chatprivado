@@ -1,0 +1,42 @@
+-- para enviar un mensaje privado a un solo jugador debes escribir el siguiente comando
+-- !mensaje Zorrito8000 ¡Hola, Zorrito8000!
+
+local Players = game.Players
+local ReplicatedStorage = game.ReplicatedStorage
+
+-- Función para manejar la llegada de nuevos jugadores
+local function onPlayerAdded(player)
+    player.Chatted:Connect(function(message)
+        local args = message:split(" ")
+        
+        -- Comando para enviar un mensaje a un jugador específico
+        if args[1] == "!mensaje" and #args >= 3 then
+            local targetName = args[2]
+            local personalMessage = table.concat(args, " ", 3)
+
+            local targetPlayer = Players:FindFirstChild(targetName)
+            if targetPlayer then
+                -- Enviar el mensaje solo al jugador específico
+                targetPlayer:SendNotification("Mensaje de " .. player.Name .. ": " .. personalMessage)
+                -- También puedes usar SayMessageRequest si es necesario
+                -- ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("[" .. player.Name .. "] a " .. targetName .. ": " .. personalMessage, "All")
+            else
+                player:SendNotification("El jugador '" .. targetName .. "' no está en el juego.")
+            end
+        else
+            -- Mensaje general si no es un comando
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("[" .. player.Name .. "] " .. message, "All")
+        end
+    end)
+
+    -- Enviar el mensaje "Buenos días" al unirse
+    ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Buenos días", "All")
+end
+
+-- Conectar a los jugadores que ya están en el juego
+for _, player in ipairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
+
+-- Conectar a nuevos jugadores que se unan
+Players.PlayerAdded:Connect(onPlayerAdded)
