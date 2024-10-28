@@ -1,0 +1,81 @@
+if not game:IsLoaded() then
+game.Loaded:Wait()
+end
+wait(0.2)
+local lplr = game.Players.LocalPlayer
+local mouse = lplr:GetMouse()
+_G.on = false
+on = true
+off = false
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "SABES PORQUE SE EXTINGUIERON LOS MAMUTS";
+    Text = "Press r to enable/disable.";
+    })
+
+mouse.KeyDown:connect(function(key)
+    if key == "r" then
+        if _G.on == false then
+            _G.on = on
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Spam Enabled";
+                Text = "Press r to disable.";
+                })
+            while _G.on == true do
+                wait()
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Deadly Dance"])
+game.Players.LocalPlayer.Character["Deadly Dance"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Flash Skewer"])
+game.Players.LocalPlayer.Character["Flash Skewer"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Sweep Kick"])
+game.Players.LocalPlayer.Character["Sweep Kick"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Wolf Fang Fist"])
+game.Players.LocalPlayer.Character["Wolf Fang Fist"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Neo Wolf Fang Fist"])
+game.Players.LocalPlayer.Character["Neo Wolf Fang Fist"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Anger Rush"])
+game.Players.LocalPlayer.Character["Mach Kick"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["Meteor Crash"])
+game.Players.LocalPlayer.Character["Meteor Crash"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["God Slicer"])
+game.Players.LocalPlayer.Character["God Slicer"]:Activate()
+wait()
+game.Players.LocalPlayer.Character.Humanoid:EquipTool(game.Players.LocalPlayer.Backpack["TS Molotov"])
+game.Players.LocalPlayer.Character["TS Molotov"]:Activate()
+wait()
+            end
+        elseif _G.on == true then
+            _G.on = off
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "Spam Disabled";
+                Text = "Press ` to enable.";
+                })
+        end
+    end
+end)
+while wait() do
+for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+if v.Name == "Justice Combination" then
+local action = game.Players.LocalPlayer.Character:WaitForChild("Action")
+if action then wait() action:Destroy() end end
+if v.Name == "Attacking" then
+v:Destroy()
+end
+if v.Name == "Action" then
+v:Destroy()
+end
+if v.Name == "Killed" then
+v:Destroy()
+end
+if v.Name == "Block" and v.Value == true then
+v.Value = false
+end
+end
+end
