@@ -1,0 +1,9 @@
+Retard = ""
+
+(game:GetService("RunService")).RenderStepped:Connect(function()
+for i, v in pairs(game.Workspace.Live:GetDescendants()) do
+if v.Name:find(Retard) then
+v:Destroy();
+end;
+end;
+end);
