@@ -1,0 +1,10 @@
+repeat wait(0.1) until game:IsLoaded()
+function Night()
+    game:GetService("Lighting").ClockTime = 0
+    game:GetService("Lighting").ClockTime = 12
+end 
+
+while true do 
+    wait(0.1)
+    Night()
+end
