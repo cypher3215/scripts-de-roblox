@@ -1,0 +1,16 @@
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+
+local function teleportToBrolyTeleport()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local brolyTeleport = workspace:FindFirstChild("BrolyTeleport")
+
+    if brolyTeleport and brolyTeleport.PrimaryPart then
+        -- Teletransportar al jugador a la posicion del modelo
+        character:SetPrimaryPartCFrame(brolyTeleport.PrimaryPart.CFrame)
+    end 
+end 
+
+teleportToBrolyTeleport()
