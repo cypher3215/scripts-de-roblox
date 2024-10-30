@@ -1,0 +1,12 @@
+local Players = game:GetService("Players")
+local TeleportService = game:GetService("TeleportService")
+
+local function teleportToPlaza()
+    local player = Players.LocalPlayer
+    local placeId = 536102540  -- ID del lugar al que quieres teletransportarte
+
+    -- Teletransportar al jugador al lugar especificado
+    TeleportService:Teleport(placeId, player)
+end
+
+teleportToPlaza()
