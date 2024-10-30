@@ -1,0 +1,110 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+wait(0.2)
+
+local Players = game:GetService("Players")
+local lplr = Players.LocalPlayer
+local mouse = lplr:GetMouse()
+_G.on = false
+local on = true
+local off = false
+
+local function teleportToBroly()
+    while true do
+        wait(1) -- Ajusta este valor según sea necesario
+        local liveFolder = workspace:FindFirstChild("Live")
+        if liveFolder then
+            local broly = liveFolder:FindFirstChild("Broly BR")
+            if broly and broly:FindFirstChild("HumanoidRootPart") then
+                -- Teletransportar al jugador a Broly
+                if lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") then
+                    lplr.Character.HumanoidRootPart.CFrame = broly.HumanoidRootPart.CFrame
+                end
+            end
+        end
+    end
+end
+
+local function automaticAttacks()
+    local tools = {
+        "Deadly Dance",
+        "Flash Skewer",
+        "Sweep Kick",
+        "Wolf Fang Fist",
+        "Neo Wolf Fang Fist",
+        "Anger Rush",
+        "Meteor Crash",
+        "God Slicer",
+        "TS Molotov"
+    }
+
+    while true do
+        wait()
+        local liveFolder = workspace:FindFirstChild("Live")
+        if liveFolder then
+            local broly = liveFolder:FindFirstChild("Broly BR")
+            if broly and broly:FindFirstChild("HumanoidRootPart") then
+                local distance = (lplr.Character.HumanoidRootPart.Position - broly.HumanoidRootPart.Position).magnitude
+                if distance < 15 then -- Ajusta el rango como desees
+                    -- Comenzar ataques automáticos
+                    if not _G.on then
+                        _G.on = true
+                        game:GetService("StarterGui"):SetCore("SendNotification", {
+                            Title = "Spam Enabled";
+                            Text = "Attacking Broly BR.";
+                        })
+                    end
+
+                    for _, toolName in pairs(tools) do
+                        local tool = lplr.Backpack:FindFirstChild(toolName)
+                        if tool then
+                            lplr.Character.Humanoid:EquipTool(tool)
+                            tool:Activate()
+                            wait(0.1) -- Espera un poco entre ataques
+                        end
+                    end
+                else
+                    if _G.on then
+                        _G.on = false
+                        game:GetService("StarterGui"):SetCore("SendNotification", {
+                            Title = "Spam Disabled";
+                            Text = "Moving away from Broly BR.";
+                        })
+                    end
+                end
+            end
+        end
+    end
+end
+
+-- Iniciar los dos procesos en paralelo
+coroutine.wrap(teleportToBroly)()
+coroutine.wrap(automaticAttacks)()
+
+-- Manejador de teclas para habilitar/deshabilitar el ataque
+mouse.KeyDown:connect(function(key)
+    if key == "r" then
+        _G.on = not _G.on
+        local status = _G.on and "Enabled" or "Disabled"
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Spam " .. status;
+            Text = "Press r to " .. (status == "Enabled" and "disable" or "enable") .. ".";
+        })
+    end
+end)
+
+while wait() do
+    for _, v in pairs(lplr.Character:GetChildren()) do
+        if v.Name == "Justice Combination" then
+            local action = lplr.Character:FindFirstChild("Action")
+            if action then wait() action:Destroy() end
+        end
+        if v.Name == "Attacking" or v.Name == "Action" or v.Name == "Killed" then
+            v:Destroy()
+        end
+        if v.Name == "Block" and v.Value == true then
+            v.Value = false
+        end
+    end
+end
