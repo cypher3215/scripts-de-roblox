@@ -1,0 +1,27 @@
+local Players = game:GetService("Players")
+
+local function teleportToBroly()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local liveFolder = workspace:FindFirstChild("Live")
+    if liveFolder then
+        local broly = liveFolder:FindFirstChild("Broly BR")
+        if broly then
+            local humanoidRootPart = broly:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                -- Teletransportar al jugador a la posición del HumanoidRootPart de Broly
+                character.HumanoidRootPart.CFrame = humanoidRootPart.CFrame
+                print(player.Name .. " se ha teletransportado a Broly.")
+            else
+                warn("HumanoidRootPart no encontrado dentro de Broly.")
+            end
+        else
+            warn("Broly no encontrado en Live.")
+        end
+    else
+        warn("Live no encontrado en Workspace.")
+    end
+end
+
+teleportToBroly()
