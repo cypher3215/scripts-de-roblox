@@ -1,0 +1,19 @@
+local Players = game:GetService("Players")
+
+local function teleportToCoordinates()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- Asegurarse de que el personaje tenga una parte primaria
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        local targetPosition = Vector3.new(2654.711669921875, 3950.404541015625, -2517.269775390625)
+        
+        -- Teletransportar al jugador a las coordenadas especificadas
+        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+        print(player.Name .. " se ha teletransportado a las coordenadas: " .. tostring(targetPosition))
+    else
+        warn("El personaje no tiene un HumanoidRootPart.")
+    end
+end
+
+teleportToCoordinates()
