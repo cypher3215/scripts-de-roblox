@@ -1,0 +1,68 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+wait(0.2)
+
+local lplr = game.Players.LocalPlayer
+local mouse = lplr:GetMouse()
+_G.on = false
+local on = true
+local off = false
+
+game:GetService("StarterGui"):SetCore("SendNotification", {
+    Title = "SABES PORQUE SE EXTINGUIERON LOS MAMUTS";
+    Text = "Press r to enable/disable.";
+})
+
+mouse.KeyDown:connect(function(key)
+    if key == "r" then
+        _G.on = not _G.on
+        local status = _G.on and "Enabled" or "Disabled"
+        game:GetService("StarterGui"):SetCore("SendNotification", {
+            Title = "Spam " .. status;
+            Text = "Press r to " .. (status == "Enabled" and "disable" or "enable") .. ".";
+        })
+
+        if _G.on then
+            -- Iniciar ataques automáticos
+            while _G.on do
+                wait()
+                local tools = {
+                    "Deadly Dance",
+                    "Flash Skewer",
+                    "Sweep Kick",
+                    "Wolf Fang Fist",
+                    "Neo Wolf Fang Fist",
+                    "Anger Rush",
+                    "Meteor Crash",
+                    "God Slicer",
+                    "TS Molotov"
+                }
+
+                for _, toolName in pairs(tools) do
+                    local tool = lplr.Backpack:FindFirstChild(toolName)
+                    if tool then
+                        lplr.Character.Humanoid:EquipTool(tool)
+                        tool:Activate()
+                        wait(0.1) -- Espera un poco entre ataques
+                    end
+                end
+            end
+        end
+    end
+end)
+
+while wait() do
+    for _, v in pairs(lplr.Character:GetChildren()) do
+        if v.Name == "Justice Combination" then
+            local action = lplr.Character:FindFirstChild("Action")
+            if action then wait() action:Destroy() end
+        end
+        if v.Name == "Attacking" or v.Name == "Action" or v.Name == "Killed" then
+            v:Destroy()
+        end
+        if v.Name == "Block" and v.Value == true then
+            v.Value = false
+        end
+    end
+end
