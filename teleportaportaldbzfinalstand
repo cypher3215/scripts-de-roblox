@@ -1,19 +1,21 @@
+local workspace = game:GetService("Workspace")
 local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
-local function teleportToCoordinates()
-    local player = Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
 
-    -- Asegurarse de que el personaje tenga una parte primaria
-    if character and character:FindFirstChild("HumanoidRootPart") then
-        local targetPosition = Vector3.new(2654.711669921875, 3950.404541015625, -2517.269775390625)
-        
-        -- Teletransportar al jugador a las coordenadas especificadas
-        character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-        print(player.Name .. " se ha teletransportado a las coordenadas: " .. tostring(targetPosition))
-    else
-        warn("El personaje no tiene un HumanoidRootPart.")
-    end
-end
+function teleportplayer(jugador, objeto)
+    if player then 
+        local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+        local wormhole = workspace:FindFirstChild("Wormhole")
 
-teleportToCoordinates()
+        if humanoidRootPart and wormhole then 
+            humanoidRootPart.CFrame = wormhole.CFrame 
+        else 
+            warn("nothing here")
+        end 
+    else 
+        warn("Nothing here")
+    end 
+end 
+
+teleportplayer()
