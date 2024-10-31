@@ -67,10 +67,10 @@ function teleportToNPCsInLiveFolder()
                 -- Teletransportar al jugador al NPC
                 humanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame
 
-                wait(0.5) -- Esperar un poco antes de atacar
+                wait(0.1) -- Esperar un poco antes de atacar
                 attack() -- Atacar al NPC
 
-                wait(1) -- Esperar un momento antes de verificar el siguiente NPC
+                wait(0.1) -- Esperar un momento antes de verificar el siguiente NPC
                 break -- Salir del for para volver a verificar si hay NPCs restantes
             end
         end
