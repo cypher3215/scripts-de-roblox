@@ -11,7 +11,7 @@ local npcNames = {
     "Caulifla", "Kale", "Hit", "Prum", "Rabanra", "Ribrianne", "Zarbuto", "Cocotte", "Katopesla",
     "Maji Kayo", "Paparoni", "The Preecho", "Kahseral", "Shantza", "Damon", "Caway", "Piccolo",
     "Android 17 FP", "Android 18 FP", "Ganos", "Roselle", "Lavender", "Bergamo", "Sorrel", "Murisam", "Murichim",
-    "Napapa", "Methiop", "Kefla", "Vegeta"
+    "Napapa", "Methiop", "Kefla", "Vegeta", "Jiren"
 }
 
 function teleportToNPCsInLiveFolder()
