@@ -1,0 +1,28 @@
+ocal DataStoreService = game:GetService("DataStoreService")
+local playerDataStore = DataStoreService:GetDataStore("PlayerData")
+
+game.Players.PlayerAdded:Connect(function(player)
+    -- Cargar datos del jugador
+    local success, data = pcall(function()
+        return playerDataStore:GetAsync(player.UserId)
+    end)
+
+    if success and data then
+        -- Inicializa el valor del jugador basado en los datos guardados
+        player:SetAttribute("MyValue", data)
+    else
+        -- Inicializa un nuevo valor si no hay datos previos
+        player:SetAttribute("MyValue", 0) -- O cualquier valor por defecto
+    end
+end)
+
+game.Players.PlayerRemoving:Connect(function(player)
+    -- Guardar datos cuando el jugador se va
+    local success, err = pcall(function()
+        playerDataStore:SetAsync(player.UserId, player:GetAttribute("MyValue"))
+    end)
+
+    if not success then
+        warn("Error guardando datos: " .. err)
+    end
+end)
