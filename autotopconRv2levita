@@ -1,0 +1,117 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+wait(0.2)
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local workspace = game:GetService("Workspace")
+
+local teleporting = true
+
+-- Lista de NPCs a buscar
+local npcNames = {
+    "Tien Shinhan", "Dyspo", "Goku", "Golden Frieza", "Toppo", "Vuon", "Gohan", "Roshi", "Cabba",
+    "Caulifla", "Kale", "Hit", "Prum", "Rabanra", "Ribrianne", "Zarbuto", "Cocotte", "Katopesla",
+    "Maji Kayo", "Paparoni", "The Preecho", "Kahseral", "Shantza", "Damon", "Caway", "Piccolo",
+    "Android 17 FP", "Android 18 FP", "Ganos", "Roselle", "Lavender", "Bergamo", "Sorrel", "Murisam", "Murichim",
+    "Napapa", "Methiop", "Kefla", "Vegeta", "Jiren"
+}
+
+-- Función para atacar
+local function attack()
+    local tools = {
+        "Deadly Dance",
+        "Flash Skewer",
+        "Sweep Kick",
+        "Wolf Fang Fist",
+        "Neo Wolf Fang Fist",
+        "Anger Rush",
+        "Meteor Crash",
+        "God Slicer",
+        "TS Molotov"
+    }
+
+    for _, toolName in pairs(tools) do
+        local tool = player.Backpack:FindFirstChild(toolName)
+        if tool then
+            player.Character.Humanoid:EquipTool(tool)
+            tool:Activate()
+            wait(0.1) -- Espera un poco entre ataques
+        end
+    end
+end
+
+function teleportToNPCsInLiveFolder()
+    local liveFolder = workspace:FindFirstChild("Live")
+
+    if not liveFolder then
+        warn("No se encontró la carpeta 'Live'.")
+        return
+    end
+
+    local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+
+    if not humanoidRootPart then
+        warn("No se encontró HumanoidRootPart.")
+        return
+    end
+
+    while teleporting do
+        for _, npcName in ipairs(npcNames) do
+            local npc = liveFolder:FindFirstChild(npcName)
+
+            if npc and npc:IsA("Model") and npc:FindFirstChild("Humanoid") and npc:FindFirstChild("HumanoidRootPart") then
+                -- Teletransportar al jugador al NPC
+                humanoidRootPart.CFrame = npc.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0) -- Levitar 5 unidades arriba
+
+                wait(0.001) -- Esperar un poco antes de atacar
+                attack() -- Atacar al NPC
+
+                wait(0.001) -- Esperar un momento antes de verificar el siguiente NPC
+                break -- Salir del for para volver a verificar si hay NPCs restantes
+            end
+        end
+
+        -- Verificar si quedan NPCs
+        local allNPCsGone = true
+        for _, npcName in ipairs(npcNames) do
+            if liveFolder:FindFirstChild(npcName) then
+                allNPCsGone = false
+                break
+            end
+        end
+
+        if allNPCsGone then
+            print("No hay más NPCs en la carpeta 'Live'.")
+            teleporting = false -- Detener el bucle si no hay más NPCs
+        end
+
+        wait(0.0001) -- Esperar un momento antes de comprobar nuevamente
+    end
+end
+
+-- Iniciar teletransportes y ataques automáticos
+teleportToNPCsInLiveFolder()
+
+-- Bucle para eliminar acciones específicas
+while wait() do
+    -- Mantener el personaje levitando
+    local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    if humanoidRootPart then
+        humanoidRootPart.Position = humanoidRootPart.Position + Vector3.new(0, 5, 0) -- Ajustar la posición para levitar
+    end
+
+    for _, v in pairs(player.Character:GetChildren()) do
+        if v.Name == "Justice Combination" then
+            local action = player.Character:FindFirstChild("Action")
+            if action then wait() action:Destroy() end
+        end
+        if v.Name == "Attacking" or v.Name == "Action" or v.Name == "Killed" then
+            v:Destroy()
+        end
+        if v.Name == "Block" and v.Value == true then
+            v.Value = false
+        end
+    end
+end
