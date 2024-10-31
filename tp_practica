@@ -1,0 +1,8 @@
+
+local player = game.Players.LocalPlayer
+local targetPosition = Vector3.new(2094.07, 390.01, 772.70)
+
+-- tp
+if player.Character:findFirstChild("HumanoidRootPart") then 
+    player.Character.HumanoidRootPart.Position = targetPosition
+end 
