@@ -1,5 +1,24 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
+
+local function teleport()
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        -- Teletransportar al jugador a las coordenadas especificadas
+        character:SetPrimaryPartCFrame(CFrame.new(2091.54, 388.61, 812.18))
+    else
+        print("El personaje no está disponible.")
+    end
+end
+
+-- Conectar la tecla G para teletransportar
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.F and not gameProcessedEvent then
+        teleport()
+    end
+end)
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
 local teleporting = false
 
 local function teleportToFirstNPC()
