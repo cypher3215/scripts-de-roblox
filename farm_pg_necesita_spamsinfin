@@ -1,0 +1,42 @@
+local player = game.Players.LocalPlayer
+local teleporting = false
+
+local function teleportToFirstNPC(character)
+    local npcFolder = workspace:FindFirstChild("NPCs"):FindFirstChild("Alive")
+
+    if npcFolder then
+        for _, npc in ipairs(npcFolder:GetChildren()) do
+            if npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") then
+                character:SetPrimaryPartCFrame(npc.HumanoidRootPart.CFrame)
+                return
+            end
+        end
+        print("No se encontraron NPCs en la carpeta Alive.")
+    else
+        print("No se encontró la carpeta de Alive.")
+    end
+end
+
+local function toggleTeleporting(character)
+    teleporting = not teleporting
+    while teleporting do
+        teleportToFirstNPC(character)
+        wait(1)
+    end
+end
+
+-- Conectar la tecla G para activar/desactivar el teletransporte
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.G and not gameProcessedEvent then
+        if player.Character then
+            toggleTeleporting(player.Character)
+        end
+    end
+end)
+
+-- Reconnect teleporting on character respawn
+player.CharacterAdded:Connect(function(character)
+    if teleporting then
+        toggleTeleporting(character)
+    end
+end)
