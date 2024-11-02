@@ -1,0 +1,27 @@
+local player = game.Players.LocalPlayer
+
+-- Accede a la carpeta del jugador en Players
+local dataFolder = player:FindFirstChild("data")
+
+if dataFolder then
+    local notSavable = dataFolder:FindFirstChild("notSavable")
+    if notSavable then
+        local weaponEquipped = notSavable:FindFirstChild("weaponEquipped")
+        local zonasegura = notSavable:FindFirstChild("isInSafezone")
+        if weaponEquipped and weaponEquipped:IsA("BoolValue") then
+            weaponEquipped.Value = true -- Establece el valor a true
+        else
+            warn("weaponEquipped no encontrado o no es un BoolValue.")
+        end
+
+        if zonasegura and zonasegura:IsA("BoolValue") then 
+            zonasegura.Value = true -- establecer true 
+        else 
+            warn("IsInSafezone no encontrado o no es un BoolValue.")
+        end 
+    else
+        warn("Carpeta 'notSavable' no encontrada.")
+    end
+else
+    warn("Carpeta 'data' no encontrada.")
+end
