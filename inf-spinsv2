@@ -1,0 +1,17 @@
+-- Suponiendo que "Players" es el servicio de jugadores
+local Players = game:GetService("Players")
+local player = Players:FindFirstChild("kingthorwhitereaper")
+
+-- Asegúrate de que el jugador existe
+if player then
+    local statsFolder = player:WaitForChild("data"):WaitForChild("stats")
+    local spins = statsFolder:WaitForChild("spins")
+
+    -- Bucle que actualiza spins a 100
+    while true do
+        spins.Value = spins.Value * 2
+        wait(0.1) -- Ajusta el tiempo según sea necesario
+    end
+else
+    warn("Jugador no encontrado")
+end
