@@ -1,0 +1,82 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local teleporting = false  -- Comenzamos sin teletransporte
+
+-- Lista de NPCs específicos que queremos buscar
+local npcNames = {
+    "Headless",
+    "Juuzou",
+    "Eto Yoshimura",
+    "Amon",
+    "Kaneki",
+    "Kuzen",  -- Añadido Kuzen
+    "Arima"   -- Añadido Arima
+}
+
+-- Coordenadas de los bosses
+local bossSpawnPositions = {
+    Kuzen = Vector3.new(2317.37280274375, 387.6122131347656, 491.0118408203125),
+    Arima = Vector3.new(1242.255615234375, 464.0116882324219, 698.0790405274062)
+}
+
+local function teleportToFirstNPC()
+    local npcFolder = workspace:FindFirstChild("NPCs"):FindFirstChild("Alive")
+
+    if npcFolder then
+        for _, npc in ipairs(npcFolder:GetChildren()) do
+            if npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") then
+                -- Verificamos si el NPC está en nuestra lista de nombres
+                for _, name in ipairs(npcNames) do
+                    if npc.Name == name then
+                        -- Teletransportar al jugador al NPC encontrado
+                        character:SetPrimaryPartCFrame(npc.HumanoidRootPart.CFrame)
+                        return true  -- Retornamos verdadero si encontramos un NPC
+                    end
+                end
+            end
+        end
+    end
+    return false  -- Retornamos falso si no encontramos un NPC
+end
+
+local function waitAndTeleport(spawnPosition)
+    wait(20)  -- Esperar 20 segundos
+    character:SetPrimaryPartCFrame(spawnPosition)  -- Teletransportar al spawn del boss
+end
+
+local function checkTeleporters()
+    local teleporterFolder = workspace:FindFirstChild("GameObjects"):FindFirstChild("RaidBoss")
+    if teleporterFolder then
+        local arimaTeleporter = teleporterFolder:FindFirstChild("Arima"):FindFirstChild("Teleporter")
+        local kuzenTeleporter = teleporterFolder:FindFirstChild("Kuzen"):FindFirstChild("Teleporter")
+        
+        if arimaTeleporter and arimaTeleporter:IsA("Part") and (character.Position - arimaTeleporter.Position).magnitude < 5 then
+            waitAndTeleport(bossSpawnPositions.Arima)
+        elseif kuzenTeleporter and kuzenTeleporter:IsA("Part") and (character.Position - kuzenTeleporter.Position).magnitude < 5 then
+            waitAndTeleport(bossSpawnPositions.Kuzen)
+        end
+    end
+end
+
+local function startTeleporting()
+    teleporting = true
+    while teleporting do
+        if not teleportToFirstNPC() then
+            checkTeleporters()  -- Verificar si estamos cerca de un teleporter
+            wait(1) -- Espera un segundo entre teletransportes
+        end
+        
+        -- Aseguramos que el personaje esté disponible en caso de que muera
+        if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
+            player.CharacterAdded:Wait()  -- Esperamos a que el personaje se vuelva a generar
+            character = player.Character
+        end
+    end
+end
+
+-- Conectar la tecla G para activar el teletransporte
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.G and not gameProcessedEvent and not teleporting then
+        startTeleporting()
+    end
+end)
