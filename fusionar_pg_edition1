@@ -1,0 +1,77 @@
+local player = game.Players.LocalPlayer
+local teleporting = false  -- Estado de teletransporte
+local lastTeleportedNPC = nil  -- Guarda el último NPC al que se teletransportó
+local teleportStartTime = 0  -- Marca el tiempo de inicio del teletransporte
+local inactiveTime = 60  -- 1 minuto en segundos
+
+local function getAllNPCs()
+    local npcFolder = workspace:FindFirstChild("NPCs"):FindFirstChild("Alive")
+    local npcs = {}
+
+    if npcFolder then
+        for _, npc in ipairs(npcFolder:GetChildren()) do
+            if npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") then
+                table.insert(npcs, npc)
+            end
+        end
+    end
+
+    return npcs
+end
+
+local function teleportToRandomNPC(character)
+    local npcs = getAllNPCs()
+    if #npcs > 0 then
+        local randomNPC = npcs[math.random(1, #npcs)]
+        character:SetPrimaryPartCFrame(randomNPC.HumanoidRootPart.CFrame)
+        lastTeleportedNPC = randomNPC  -- Actualizar el último NPC teletransportado
+        teleportStartTime = tick()  -- Marcar el tiempo de inicio
+    else
+        print("No se encontraron NPCs disponibles para teletransportarse.")
+    end
+end
+
+local function monitorCurrentNPC()
+    while teleporting do
+        local closestNPC = getClosestNPC(player.Character)
+        if closestNPC then
+            local humanoid = closestNPC:FindFirstChildOfClass("Humanoid")
+            if humanoid and humanoid.Health > 0 then  -- Solo verifica si el NPC está "vivo"
+                local currentTime = tick()
+                local playerHealth = player.Character:FindFirstChildOfClass("Humanoid").Health
+
+                -- Verificar si el NPC ha estado inactivo
+                if (currentTime - teleportStartTime >= inactiveTime) or (humanoid.Health == playerHealth) then
+                    print("El NPC más cercano ha estado inactivo por más de 1 minuto, teletransportando a un NPC aleatorio.")
+                    teleportToRandomNPC(player.Character)
+                end
+            end
+        end
+        wait(1)  -- Espera antes de verificar nuevamente
+    end
+end
+
+local function toggleTeleporting(character)
+    teleporting = not teleporting
+    if teleporting then
+        teleportToRandomNPC(character)  -- Teletransportar al primer NPC aleatorio al activar
+        monitorCurrentNPC()  -- Comienza a monitorear el NPC más cercano
+    end
+end
+
+-- Conectar la tecla G para activar/desactivar el teletransporte
+game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
+    if input.KeyCode == Enum.KeyCode.G and not gameProcessedEvent then
+        if player.Character then
+            toggleTeleporting(player.Character)
+        end
+    end
+end)
+
+-- Reconnect teleporting on character respawn
+player.CharacterAdded:Connect(function(character)
+    if teleporting then
+        teleportToRandomNPC(character)  -- Teletransportar al primer NPC aleatorio al reaparecer
+        monitorCurrentNPC()  -- Comienza a monitorear el NPC más cercano
+    end
+end)
