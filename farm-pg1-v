@@ -1,6 +1,5 @@
 local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local teleporting = false  -- Comenzamos sin teletransporte
+local teleporting = false
 
 -- Lista de NPCs específicos que queremos buscar
 local npcNames = {
@@ -11,7 +10,7 @@ local npcNames = {
     "Kaneki"
 }
 
-local function teleportToFirstNPC()
+local function teleportToFirstNPC(character)
     local npcFolder = workspace:FindFirstChild("NPCs"):FindFirstChild("Alive")
 
     if npcFolder then
@@ -36,20 +35,26 @@ end
 local function startTeleporting()
     teleporting = true
     while teleporting do
-        teleportToFirstNPC()
-        wait(1) -- Espera un segundo entre teletransportes (ajusta si es necesario)
-
-        -- Aseguramos que el personaje esté disponible en caso de que muera
-        if not player.Character or not player.Character:FindFirstChild("HumanoidRootPart") then
-            player.CharacterAdded:Wait()  -- Esperamos a que el personaje se vuelva a generar
-            character = player.Character
+        -- Aseguramos que el personaje esté disponible
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            teleportToFirstNPC(player.Character)
         end
+        wait(1) -- Espera un segundo entre teletransportes (ajusta si es necesario)
     end
 end
 
 -- Conectar la tecla G para activar el teletransporte
 game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessedEvent)
     if input.KeyCode == Enum.KeyCode.G and not gameProcessedEvent and not teleporting then
+        startTeleporting()
+    end
+end)
+
+-- Manejar el evento de regeneración del personaje
+player.CharacterAdded:Connect(function(character)
+    -- Reiniciar el teletransporte cuando se genere un nuevo personaje
+    wait(1)  -- Espera un segundo para asegurarte de que el personaje esté completamente cargado
+    if teleporting then
         startTeleporting()
     end
 end)
