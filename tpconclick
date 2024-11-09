@@ -1,0 +1,18 @@
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Asegúrate de que el jugador tenga un "HumanoidRootPart" para moverlo
+local function teleportToPosition(position)
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        -- Sumar un poco de altura para evitar que se teletransporte debajo del suelo
+        character.HumanoidRootPart.CFrame = CFrame.new(position.x, position.y + 5, position.z)
+    end
+end
+
+-- Conectar el evento de click del mouse para teletransportarse al hacer clic
+mouse.Button1Down:Connect(function()
+    if mouse.Target then
+        teleportToPosition(mouse.Hit.p)  -- Teletransportar a la posición donde el mouse ha hecho clic
+    end
+end)
