@@ -1,0 +1,121 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local userInputService = game:GetService("UserInputService")
+local camera = workspace.CurrentCamera
+
+local flying = false
+local flightSpeed = 50
+local doubleSpaceCount = 0
+local bodyGyro
+local bodyVelocity
+
+-- Función para iniciar el vuelo
+local function startFlying()
+	if not flying then
+		flying = true
+		humanoid.PlatformStand = true -- Evitar que caiga
+
+		-- Ajusta la posición inicial
+		character:SetPrimaryPartCFrame(CFrame.new(character.PrimaryPart.Position.X, character.PrimaryPart.Position.Y + 5, character.PrimaryPart.Position.Z) * CFrame.Angles(math.rad(45), 0, 0))
+
+		-- Crear BodyGyro y BodyVelocity
+		bodyGyro = Instance.new("BodyGyro")
+		bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
+		bodyGyro.P = 3000
+		bodyGyro.Parent = character.PrimaryPart
+
+		bodyVelocity = Instance.new("BodyVelocity")
+		bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+		bodyVelocity.Parent = character.PrimaryPart
+
+		while flying do
+			-- Obtener la dirección de la cámara
+			local direction = camera.CFrame.LookVector
+			local rightVector = camera.CFrame.RightVector
+			local moveDirection = Vector3.new(0, 0, 0)
+			local verticalDirection = 0 -- Variable para control de la altura (eje Y)
+
+			-- Movimiento hacia adelante y atrás
+			if userInputService:IsKeyDown(Enum.KeyCode.W) then
+				moveDirection = moveDirection + direction
+			elseif userInputService:IsKeyDown(Enum.KeyCode.S) then
+				moveDirection = moveDirection - direction
+			end
+
+			-- Movimiento lateral
+			if userInputService:IsKeyDown(Enum.KeyCode.A) then
+				moveDirection = moveDirection - rightVector
+			elseif userInputService:IsKeyDown(Enum.KeyCode.D) then
+				moveDirection = moveDirection + rightVector
+			end
+
+			-- Movimiento hacia arriba con la tecla 'Q'
+			if userInputService:IsKeyDown(Enum.KeyCode.Q) then
+				verticalDirection = 1 -- Subir
+			elseif userInputService:IsKeyDown(Enum.KeyCode.E) then
+				verticalDirection = -1 -- Bajar (si también quieres permitirlo con 'E')
+			end
+
+			-- Normalizar el vector de movimiento y aplicar la velocidad
+			if moveDirection.Magnitude > 0 then
+				moveDirection = moveDirection.Unit * flightSpeed
+				bodyVelocity.Velocity = moveDirection + Vector3.new(0, verticalDirection * flightSpeed, 0) -- Aplicar la velocidad vertical
+			else
+				bodyVelocity.Velocity = Vector3.new(0, verticalDirection * flightSpeed, 0) -- Si no hay movimiento horizontal, solo aplicamos la velocidad vertical
+			end
+
+			-- Actualizar la orientación para mirar hacia la cámara
+			bodyGyro.CFrame = CFrame.new(character.PrimaryPart.Position, character.PrimaryPart.Position + direction)
+
+			wait(0.1)
+		end
+		-- Limpiar
+		bodyGyro:Destroy()
+		bodyVelocity:Destroy()
+	end
+end
+
+-- Función para detener el vuelo
+local function stopFlying()
+	flying = false
+	humanoid.PlatformStand = false
+end
+
+-- Manejo de entrada de teclado
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+		-- Doble presionar espacio
+		if input.KeyCode == Enum.KeyCode.Space then
+			doubleSpaceCount += 1
+			if doubleSpaceCount == 1 then
+				wait(0.3) -- Tiempo para registrar el segundo espacio
+				doubleSpaceCount = 0
+			elseif doubleSpaceCount == 2 then
+				if flying then
+					stopFlying()
+				else
+					startFlying()
+				end
+				doubleSpaceCount = 0
+			end
+		end
+	end
+end)
+
+-- Ajustar velocidad al presionar Shift
+userInputService.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.LeftShift or input.KeyCode == Enum.KeyCode.RightShift then
+			if flying then
+				if input.UserInputState == Enum.UserInputState.Begin then
+					flightSpeed = 100 -- Aumenta la velocidad
+				elseif input.UserInputState == Enum.UserInputState.End then
+					flightSpeed = 50 -- Vuelve a la velocidad base
+				end
+			end
+		end
+	end
+end)
