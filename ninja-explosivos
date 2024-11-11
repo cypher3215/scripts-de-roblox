@@ -1,0 +1,61 @@
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local inputusuario = game:GetService("UserInputService")
+
+-- Función para generar la explosión
+function generarExplosion(posicion)
+    -- Crear una explosión
+    local explosion = Instance.new("Explosion")
+    
+    -- Definir la posición de la explosión
+    explosion.Position = posicion
+    
+    -- Ajustar la fuerza de la explosión
+    explosion.BlastRadius = 1  -- Radio de la explosión
+    explosion.BlastPressure = 1  -- Fuerza de la explosión
+    
+    -- Añadir la explosión al juego
+    explosion.Parent = game.Workspace
+    
+    -- Ahora vamos a crear un ParticleEmitter para dar el efecto visual del color rojo carmesí.
+    local particleEmitter = Instance.new("ParticleEmitter")
+    
+    -- Hacer que el ParticleEmitter esté dentro de la explosión
+    particleEmitter.Parent = explosion
+    
+    -- Cambiar el color de las partículas a rojo carmesí
+    particleEmitter.StartColor = Color3.fromRGB(220, 20, 60)  -- Rojo carmesí
+    particleEmitter.EndColor = Color3.fromRGB(220, 20, 60)    -- Mantener el color en toda la emisión
+    particleEmitter.Lifetime = NumberRange.new(0.5, 1)         -- Duración de las partículas
+    particleEmitter.Rate = 500                                  -- Tasa de emisión de partículas
+    particleEmitter.Size = NumberSequence.new(3, 0)            -- Tamaño de las partículas
+    particleEmitter.Speed = NumberRange.new(50, 100)            -- Velocidad de las partículas
+    particleEmitter.SpreadAngle = Vector2.new(180, 180)         -- Ángulo de dispersión de las partículas
+    particleEmitter.Texture = "rbxassetid://133624680"          -- Textura de las partículas (una explosión)
+    
+    -- Opcional: Sonido de explosión
+    local explosionSound = Instance.new("Sound")
+    explosionSound.SoundId = "rbxassetid://140169042"  -- Sonido de explosión (puedes cambiarlo)
+    explosionSound.Parent = explosion
+    explosionSound:Play()
+end
+
+-- Crear la herramienta "Nova"
+local explotar = Instance.new("Tool", game.Players.LocalPlayer.Backpack)
+explotar.RequiresHandle = false
+explotar.RobloxLocked = true 
+explotar.Name = "Nova"
+explotar.ToolTip = "Supernova"
+
+-- Lo que ocurre cuando se equipa la herramienta
+explotar.Equipped:Connect(function(Mouse)
+    Mouse.Button1Down:Connect(function()
+        if Mouse.Target then
+            -- Mover al jugador a la posición donde clickeó
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(Mouse.Hit.x, Mouse.Hit.y + 5, Mouse.Hit.z)
+            
+            -- Generar la explosión en la posición donde el jugador hizo clic
+            generarExplosion(Mouse.Hit.Position)
+        end
+    end)
+end)
